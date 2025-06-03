@@ -13,3 +13,7 @@
 
 ## Todo for S
 - [ ] todo
+
+
+### General Feature Ideas
+- Estimate bus location using time until arrival and traffic data?
