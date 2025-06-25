@@ -12,7 +12,8 @@
 - [ ] todo
 
 ## Todo for S
-- [ ] todo
+- [ ] look at representing bus routes on the map
+- [ ] add boundry and website shite
 
 
 ## General Feature Ideas
