@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cork Transport Map: OSM Test</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script type="module">
+
+    // Create map
+    var map = L.map('map').setView([51.89880, -8.47514], 14);
+
+    // Add OSM tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add marker
+    var marker = L.marker([51.89880, -8.47514]).addTo(map);
+    marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+
+
+    // Adding bus
+    var bus_icon = L.icon({
+        iconUrl: 'Bus Icon.png',
+        // shadowUrl: 'leaf-shadow.png',
+
+        iconSize:     [33.5, 36.5], // size of the icon
+        //shadowSize:   [50, 64], // size of the shadow
+        iconAnchor:   [16.75, 18.25], // point of the icon which will correspond to marker's location
+        //shadowAnchor: [4, 62],  // the same for the shadow
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+
+    var bus = L.marker([51.90880, -8.48514], {icon: bus_icon}).addTo(map);
+
+    bus.bindPopup("<div style='background: linear-gradient(#fff 70%,#0000 70%),linear-gradient(-45deg,#fff 20%,#ea1d1a 20% 25%,#fff 25% 30%,#ea1d1a 30% 35%,#fff 35% 40%,#ea1d1a 40%);'>BUS</div>");
+
+
+
+
+
+    // Irish Rail API Request
+    let xhttp;
+    xhttp = new XMLHttpRequest();
+    xhttp.addEventListener("readystatechange", function() {
+        if ( xhttp.readyState === 4 ) { // response has fully arrived?
+            if ( xhttp.status === 200 ) { // request successful?
+                let xml = xhttp.responseXML.documentElement;
+                let json = xmlToJson(xml);
+
+                console.log("XML:", xml);
+                console.log("json:", json);
+
+                console.log(json.objTrainPositions)
+                for (let train of json.objTrainPositions) {
+                    console.log(train.TrainLatitude['#text'])
+                    
+                    L.marker([parseInt(train.TrainLatitude['#text']), parseInt(train.TrainLongitude['#text'])]).addTo(map)
+                        .bindPopup(train.PublicMessage['#text']);
+                    //, {icon: bus_icon}
+                }
+                
+
+            }
+            else { console.error("Problem with API Request: " + xhttp.status); }
+        }
+    }, false);
+    xhttp.open("GET", "http://localhost:3000/proxy", true);
+    xhttp.send(null);
+
+
+    // helper function
+    function xmlToJson(xml) {
+        // Base case: element node
+        let obj = {};
+        if (xml.nodeType === 1) {
+            // If element has attributes, add them
+            if (xml.attributes.length > 0) {
+            obj["@attributes"] = {};
+            for (let attr of xml.attributes) {
+                obj["@attributes"][attr.nodeName] = attr.nodeValue;
+            }
+            }
+        } else if (xml.nodeType === 3) {
+            return xml.nodeValue.trim(); // Text node
+        }
+
+        // Loop over children
+        for (let child of xml.childNodes) {
+            const name = child.nodeName;
+            const value = xmlToJson(child);
+            if (!value) continue;
+
+            if (obj[name] === undefined) {
+            obj[name] = value;
+            } else {
+            // Turn into array if multiple elements with same name
+            if (!Array.isArray(obj[name])) {
+                obj[name] = [obj[name]];
+            }
+            obj[name].push(value);
+            }
+        }
+
+        return obj;
+    }
+    </script>
+</body>
+</html>

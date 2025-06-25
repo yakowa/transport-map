@@ -1,0 +1,16 @@
+{
+  "name": "transport-map",
+  "version": "1.0.0",
+  "description": "A transportation map for Cork",
+  "main": "n/a",
+  "scripts": {
+    "test": "n/a"
+  },
+  "author": "El Egan Morley (Yakowa)",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2"
+  },
+  "type": "commonjs"
+}
