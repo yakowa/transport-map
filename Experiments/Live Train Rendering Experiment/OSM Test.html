@@ -63,11 +63,20 @@
                 console.log("XML:", xml);
                 console.log("json:", json);
 
-                console.log(json.objTrainPositions)
+                console.log("json.objTrainPositions:")
+                console.log(json.objTrainPositions);
                 for (let train of json.objTrainPositions) {
                     console.warn("[LAT THEN LONG]", train.TrainLatitude['#text'], train.TrainLongitude['#text'])
+                
+                    //casting json string coordinates to a float
+                    let trainLat = parseFloat(train.TrainLatitude['#text']);
+                    let trainLong = parseFloat(train.TrainLongitude['#text']);
+                    // console.warn("Parsed Lat/Long: " + trainLat + " , " + trainLong);
 
-                    L.marker([parseInt(train.TrainLatitude['#text']), parseInt(train.TrainLongitude['#text'])]).addTo(map)
+                    //check for funky coordinates from api, as it can be 0,0 at times
+                    if ((trainLat, trainLong) === (0, 0)) continue;
+
+                    L.marker([trainLat, trainLong]).addTo(map)
                         .bindPopup(train.PublicMessage['#text']);
                     //, {icon: bus_icon}
                 }
@@ -116,6 +125,10 @@
 
         return obj;
     }
+
+
+    //Traffic layer
+
     </script>
 </body>
 
