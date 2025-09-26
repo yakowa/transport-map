@@ -19,8 +19,11 @@
     var map = L.map('map').setView([51.89880, -8.47514], 14);
 
     // Add OSM tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '© OpenStreetMap contributors',
+        maxNativeZoom: 19,
+        maxZoom: 30
     }).addTo(map);
 
     // Add marker
